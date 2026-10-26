@@ -5,67 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <title>매너노트 - 상황별 예절 사전</title>
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #0f172a;
-      --text-sub: #64748b;
-      --primary: #2563eb;
-      --primary-light: #eff6ff;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--text-main); }
-    .app-container { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--card-bg); display: flex; flex-direction: column; }
-
-    /* 헤더 */
-    .header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); z-index: 10; }
-    .header-title { font-size: 18px; font-weight: 700; margin: 0; }
-    .back-btn { background: none; border: none; font-size: 15px; font-weight: 600; color: var(--primary); cursor: pointer; display: none; padding: 4px 8px 4px 0; }
-
-    /* 메인 컨텐츠 영역 */
-    .content { padding: 20px; flex: 1; }
-
-    /* 검색창 */
-    .search-box { margin-bottom: 24px; position: relative; }
-    .search-input { width: 100%; padding: 14px 16px; font-size: 15px; border: 1.5px solid var(--border); border-radius: 12px; background: #f1f5f9; outline: none; transition: 0.2s; }
-    .search-input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-
-    /* [화면 1: 홈 화면] 카테고리 그리드 */
-    .home-section-title { font-size: 14px; font-weight: 600; color: var(--text-sub); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .category-card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.1s, border-color 0.2s; text-align: left; }
-    .category-card:active { transform: scale(0.97); }
-    .category-icon { font-size: 28px; margin-bottom: 8px; display: block; }
-    .category-name { font-size: 16px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-    .category-desc { font-size: 12px; color: var(--text-sub); line-height: 1.3; }
-
-    /* [화면 2: 상세 화면] 세부 상황 목록 */
-    .detail-view { display: none; }
-    .sub-situation-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px; scrollbar-width: none; }
-    .chip { padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 20px; background: #f1f5f9; border: none; color: var(--text-sub); cursor: pointer; white-space: nowrap; }
-    .chip.active { background: var(--text-main); color: #ffffff; }
-
-    /* 세부 3단계 카드 (옷, 행동, 인사말) */
-    .step-card { background: #ffffff; border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-    .step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .step-badge { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
-    .badge-cloth { background: #ede9fe; color: #6d28d9; }
-    .badge-action { background: #e0f2fe; color: #0369a1; }
-    .badge-speech { background: #fef3c7; color: #b45309; }
-    .step-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
-    .step-core { font-size: 14px; line-height: 1.5; color: #334155; margin-bottom: 8px; font-weight: 500; }
-
-    /* 아코디언 (이유 확인) */
-    details { background: #f8fafc; border-radius: 8px; padding: 8px 12px; font-size: 12px; }
-    summary { font-weight: 600; cursor: pointer; color: var(--text-sub); outline: none; }
-    .why-text { margin-top: 6px; color: #64748b; line-height: 1.4; }
-  </style>
+  <!-- 분리된 디자인 스타일시트 불러오기 -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app-container">
-    <!-- 상단 네비게이션 헤더 -->
     <div class="header">
       <button class="back-btn" id="backBtn" onclick="goToHome()">← 뒤로가기</button>
       <h1 class="header-title" id="headerTitle">매너노트</h1>
@@ -73,12 +17,11 @@
     </div>
 
     <div class="content">
-      <!-- 검색창 (상시 노출) -->
       <div class="search-box">
         <input type="text" id="searchInput" class="search-input" placeholder="상황, 복장, 인사말 검색 (예: 장례식, 절, 조의금)">
       </div>
 
-      <!-- [화면 1] 홈 화면: 카테고리 카드 메뉴 -->
+      <!-- [화면 1] 홈 카테고리 -->
       <div id="homeView">
         <div class="home-section-title">상황별 카테고리</div>
         <div class="category-grid">
@@ -105,145 +48,16 @@
         </div>
       </div>
 
-      <!-- [화면 2] 상세 화면: 세부 드릴다운 목록 -->
+      <!-- [화면 2] 상세 드릴다운 -->
       <div id="detailView" class="detail-view">
-        <!-- 하위 탭 (예: 장례식 / 결혼식) -->
         <div class="sub-situation-chips" id="subSituationChips"></div>
-        <!-- 옷 / 행동 / 인사말 카드 영역 -->
         <div id="stepCardsContainer"></div>
       </div>
     </div>
   </div>
 
-  <script>
-    // [세분화된 데이터베이스] 상황 - 옷 / 행동 / 인사말 구조
-    const mannerDB = {
-      "경조사": [
-        {
-          subTitle: "장례식 조문",
-          steps: [
-            { type: "cloth", badge: "옷 (복장)", title: "검정 무채색 정장 & 어두운 양말", core: "검정색 정장이 기본이며, 짙은 남색이나 어두운 회색도 가능합니다. 양말과 스타킹도 무조건 어두운 무지 단색을 착용합니다.", why: "화려한 색상을 절제하여 유가족의 슬픔에 예를 표하는 침묵의 애도입니다." },
-            { type: "action", badge: "행동 (절/순서)", title: "분향/헌화 후 큰절 2회와 반절 1회", core: "분향(향을 피울 땐 입으로 불지 않고 손바닥으로 끕니다) 후 고인에게 절 2번, 유가족과 맞절 1번을 합니다. 종교에 따라 묵념도 가능합니다.", why: "고인의 영면을 비는 전통적인 배례법입니다." },
-            { type: "speech", badge: "인사말", title: "삼가 고인의 명복을 빕니다", core: "유가족에게 '삼가 고인의 명복을 빕니다' 또는 '얼마나 상심이 크십니까'라고 짧게 건네며, 고인의 사망 원인을 구체적으로 캐묻지 않습니다.", why: "지나친 말은 유가족에게 더 큰 상처가 되므로 말수를 아끼는 것이 최선의 위로입니다." }
-          ]
-        },
-        {
-          subTitle: "결혼식 참석",
-          steps: [
-            { type: "cloth", badge: "옷 (복장)", title: "단정한 수트나 세미 정장 (화이트 제외)", core: "신부의 웨딩드레스와 겹치는 올 화이트/아이보리 계열 원피스는 절대 금기입니다. 단정한 네이비, 베이지 톤을 추천합니다.", why: "일생에 한 번뿐인 주인공(신부)이 가장 돋보여야 하기 때문입니다." },
-            { type: "action", badge: "행동 (시간/식사)", title: "식 시작 20~30분 전 도착 & 인사", core: "축의금 접수처에 축의금을 전달하고 신랑·신부와 눈인사를 나눕니다. 식장 뒤에서 밥표만 챙겨 바로 식당으로 가지 않습니다.", why: "새 출발을 지켜보고 진심으로 축하해 주기 위한 자리입니다." },
-            { type: "speech", badge: "인사말", title: "결혼을 진심으로 축하드립니다", core: "신랑·신부 및 혼주에게 '결혼 축하드립니다. 두 분 정말 잘 어울리십니다'라고 덕담을 건넵니다.", why: "밝고 긍정적인 에너지로 앞날을 축복하는 자리이기 때문입니다." }
-          ]
-        }
-      ],
-      "비즈니스": [
-        {
-          subTitle: "명함 교환",
-          steps: [
-            { type: "action", badge: "행동 (교환)", title: "일어서서 두 손으로 교환", core: "반드시 일어선 상태에서 목례와 함께 두 손으로 건네고 두 손으로 받습니다. 아랫사람이 먼저 건네는 것이 기본입니다.", why: "상대방의 직책과 이름을 소중히 여긴다는 존중의 표현입니다." },
-            { type: "speech", badge: "인사말", title: "소속과 이름을 명확하게 발음", core: "'OO기업 OO팀 OOO 대리입니다. 반갑습니다.'라고 말하며 건넵니다.", why: "상대방이 내 소속을 단번에 인지할 수 있도록 돕기 위함입니다." },
-            { type: "cloth", badge: "태도 (보관)", title: "테이블 우측 상단에 가지런히 정돈", core: "받은 명함은 미팅 중 테이블에 올려두어 상대방의 직함을 확인하며 대화합니다. 바지 뒷주머니에 바로 넣지 않습니다.", why: "명함은 상대방의 얼굴과 같으므로 회의가 끝날 때까지 정중히 다룹니다." }
-          ]
-        }
-      ],
-      "식사·회식": [
-        {
-          subTitle: "회식 및 자리배치",
-          steps: [
-            { type: "action", badge: "행동 (자리)", title: "상석은 안쪽, 말석은 출입구 쪽", core: "가장 안쪽의 편안한 벽 쪽 자리는 상사나 손님에게 양보하고, 주문과 동선이 편한 문 쪽 자리에 앉습니다.", why: "모임을 주관하거나 모신 분에 대한 배려이자 원활한 식사 진행을 위함입니다." },
-            { type: "speech", badge: "인사말 (건배)", title: "건배 제의 시 잔은 상대방보다 살짝 낮게", core: "윗사람과 잔을 부딪칠 때는 내 잔의 테두리를 상대방 잔보다 살짝 아래로 맞춥니다.", why: "자신을 낮추고 상대방을 예우하는 한국 식문화의 오랜 관습입니다." }
-          ]
-        }
-      ]
-    };
-
-    let activeCategory = null;
-    let activeSubIndex = 0;
-
-    // 카테고리 진입
-    function openCategory(catName) {
-      activeCategory = catName;
-      activeSubIndex = 0;
-      document.getElementById("homeView").style.display = "none";
-      document.getElementById("detailView").style.display = "block";
-      document.getElementById("backBtn").style.display = "inline-block";
-      document.getElementById("headerTitle").innerText = catName;
-      renderDetail();
-    }
-
-    // 홈으로 돌아가기
-    function goToHome() {
-      activeCategory = null;
-      document.getElementById("homeView").style.display = "block";
-      document.getElementById("detailView").style.display = "none";
-      document.getElementById("backBtn").style.display = "none";
-      document.getElementById("headerTitle").innerText = "매너노트";
-      document.getElementById("searchInput").value = "";
-    }
-
-    // 상세 화면 렌더링
-    function renderDetail() {
-      const dataList = mannerDB[activeCategory] || [];
-      const chipsContainer = document.getElementById("subSituationChips");
-      const cardsContainer = document.getElementById("stepCardsContainer");
-
-      // 상단 하위 칩 생성 (장례식 / 결혼식 등)
-      chipsContainer.innerHTML = dataList.map((item, idx) => `
-        <button class="chip ${idx === activeSubIndex ? 'active' : ''}" onclick="selectSub(${idx})">
-          ${item.subTitle}
-        </button>
-      `).join('');
-
-      // 세부 카드 렌더링 (옷 / 행동 / 인사말)
-      const currentSituation = dataList[activeSubIndex];
-      if (!currentSituation) {
-        cardsContainer.innerHTML = "<div style='color:#94a3b8; text-align:center; padding:20px;'>준비 중인 카테고리입니다.</div>";
-        return;
-      }
-
-      cardsContainer.innerHTML = currentSituation.steps.map(step => `
-        <div class="step-card">
-          <div class="step-header">
-            <span class="step-badge badge-${step.type}">${step.badge}</span>
-            <span class="step-title">${step.title}</span>
-          </div>
-          <div class="step-core">${step.core}</div>
-          <details>
-            <summary>💡 왜 이렇게 해야 할까요?</summary>
-            <div class="why-text">${step.why}</div>
-          </details>
-        </div>
-      `).join('');
-    }
-
-    function selectSub(idx) {
-      activeSubIndex = idx;
-      renderDetail();
-    }
-
-    // 검색 입력 시 자동 라우팅
-    document.getElementById("searchInput").addEventListener("input", function() {
-      const kw = this.value.trim().toLowerCase();
-      if (!kw) return;
-
-      // 검색어가 있으면 매칭되는 첫 번째 카테고리로 즉시 전환
-      for (const [cat, situations] of Object.entries(mannerDB)) {
-        for (let i = 0; i < situations.length; i++) {
-          const match = situations[i].subTitle.toLowerCase().includes(kw) ||
-            situations[i].steps.some(s => s.title.toLowerCase().includes(kw) || s.core.toLowerCase().includes(kw));
-          if (match) {
-            activeCategory = cat;
-            activeSubIndex = i;
-            document.getElementById("homeView").style.display = "none";
-            document.getElementById("detailView").style.display = "block";
-            document.getElementById("backBtn").style.display = "inline-block";
-            document.getElementById("headerTitle").innerText = cat;
-            renderDetail();
-            return;
-          }
-        }
-      }
-    });
-  </script>
+  <!-- 데이터 파일 먼저 읽고, 그 다음 동작 스크립트 실행 -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
