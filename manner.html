@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>매너노트 - 상황별 예절 사전</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #f8fafc; margin: 0; padding: 16px; color: #1e293b; }
+    .container { max-width: 480px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    h1 { font-size: 22px; margin: 0 0 16px 0; text-align: center; color: #0f172a; }
+    
+    /* 검색창 */
+    .search-input { width: 100%; box-sizing: border-box; padding: 12px 14px; font-size: 15px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 12px; outline: none; transition: 0.2s; }
+    .search-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+
+    /* 카테고리 탭 */
+    .tab-group { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+    .tab-btn { background: #f1f5f9; border: none; padding: 8px 14px; font-size: 13px; font-weight: 600; border-radius: 20px; cursor: pointer; color: #64748b; white-space: nowrap; }
+    .tab-btn.active { background: #0f172a; color: #ffffff; }
+
+    /* 카드 스타일 */
+    .card-list { display: flex; flex-direction: column; gap: 14px; }
+    .card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; background: #fff; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .card-title { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .tag { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; background: #e0f2fe; color: #0369a1; }
+    .tag-custom { background: #fef3c7; color: #b45309; }
+
+    /* DO & DONT 박스 */
+    .box-do { background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; }
+    .box-dont { background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 10px 12px; border-radius: 6px; margin-bottom: 8px; }
+    .box-title { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .box-do .box-title { color: #15803d; }
+    .box-dont .box-title { color: #b91c1c; }
+    ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.5; color: #334155; }
+
+    /* 아코디언 */
+    details { margin-top: 10px; background: #f8fafc; border-radius: 8px; padding: 8px 12px; font-size: 13px; border: 1px solid #edf2f7; }
+    summary { font-weight: 600; cursor: pointer; color: #475569; outline: none; }
+    .why-desc { margin-top: 8px; color: #64748b; line-height: 1.45; }
+    .no-result { display: none; text-align: center; padding: 30px; color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 매너노트 (Manner Note)</h1>
+
+    <!-- 1. 실시간 검색창 -->
+    <input type="text" id="searchInput" class="search-input" placeholder="상황을 검색해 보세요 (예: 조의금, 명함, 회식)">
+
+    <!-- 2. 카테고리 탭 버튼 -->
+    <div class="tab-group" id="tabGroup">
+      <button class="tab-btn active" data-category="ALL">전체</button>
+      <button class="tab-btn" data-category="경조사">경조사</button>
+      <button class="tab-btn" data-category="비즈니스">비즈니스</button>
+      <button class="tab-btn" data-category="식사·회식">식사·회식</button>
+    </div>
+
+    <!-- 3. 카드가 동적으로 그려질 영역 -->
+    <div class="card-list" id="cardList"></div>
+    <div id="noResult" class="no-result">일치하는 예절 정보가 없습니다.</div>
+  </div>
+
+  <script>
+    // [데이터 영역]: 나중에 AI에게 시켜서 이 배열에 데이터만 계속 추가하면 됩니다!
+    const mannerData = [
+      {
+        category: "경조사",
+        title: "장례식 조문",
+        tag: "공식 표준",
+        isCustom: false,
+        doList: ["검정/무채색 정장을 입고 양말도 어두운 단색을 착용합니다.", "조객록 작성 후 분향(또는 헌화)을 정중히 진행합니다."],
+        dontList: ["유가족에게 고인의 사망 경위를 상세히 묻지 않습니다.", "지인을 만나도 큰 소리로 인사하거나 건배하지 않습니다."],
+        why: "슬픔에 잠긴 유가족에게 불필요한 감정 소모를 주지 않고 조용한 추모의 분위기를 지키는 것이 최우선 배려이기 때문입니다."
+      },
+      {
+        category: "경조사",
+        title: "결혼식 하객 참석",
+        tag: "공식 표준",
+        isCustom: false,
+        doList: ["식 시작 20~30분 전에 도착해 축의금을 내고 인사를 나눕니다.", "신랑·신부와 겹치지 않는 단정한 단색 의상을 착용합니다."],
+        dontList: ["올 화이트 계열의 원피스나 밝은 의상을 입지 않습니다.", "식장 뒤에서 식권만 받고 예식을 보지 않은 채 바로 퇴장하지 않습니다."],
+        why: "주인공인 신부의 드레스가 가장 돋보이도록 배려하고, 두 사람의 새 출발을 진심으로 축하하기 위함입니다."
+      },
+      {
+        category: "비즈니스",
+        title: "명함 교환",
+        tag: "비즈니스 표준",
+        isCustom: false,
+        doList: ["서서 가벼운 목례와 함께 두 손으로 건네고 두 손으로 받습니다.", "받은 명함은 미팅 중 테이블 위에 가지런히 올려둡니다."],
+        dontList: ["상대방의 명함을 받자마자 접거나 메모를 마구 적지 않습니다.", "바지 뒷주머니나 구겨진 지갑에 바로 집어넣지 않습니다."],
+        why: "상대방의 이름과 직책이 담긴 명함은 상대방의 얼굴과 같으므로 소중히 다루는 태도를 보여주기 위함입니다."
+      },
+      {
+        category: "식사·회식",
+        title: "회식 상석 및 착석",
+        tag: "조직 문화",
+        isCustom: true,
+        doList: ["가장 안쪽의 편안한 자리(상석)는 윗분이나 손님에게 양보합니다.", "출입문이나 통로 쪽, 추가 주문이 편한 자리에 먼저 앉습니다."],
+        dontList: ["식사 시작 전 수저나 물컵 세팅을 손 놓고 가만히 있지 않습니다.", "음식이 나오자마자 윗사람보다 먼저 숟가락을 들지 않습니다."],
+        why: "식사 공간의 동선을 원활하게 하고 식사를 주관하거나 모신 분에 대한 예우를 표하기 위함입니다."
+      }
+    ];
+
+    let currentCategory = "ALL";
+    const cardList = document.getElementById("cardList");
+    const searchInput = document.getElementById("searchInput");
+    const noResult = document.getElementById("noResult");
+    const tabButtons = document.querySelectorAll(".tab-btn");
+
+    // 화면에 카드를 자동으로 그려주는 함수 (동적 렌더링)
+    function renderCards() {
+      const keyword = searchInput.value.toLowerCase().trim();
+      cardList.innerHTML = "";
+      let count = 0;
+
+      mannerData.forEach(item => {
+        const matchCategory = (currentCategory === "ALL" || item.category === currentCategory);
+        const matchSearch = item.title.toLowerCase().includes(keyword) || 
+                            item.doList.some(d => d.toLowerCase().includes(keyword)) ||
+                            item.dontList.some(d => d.toLowerCase().includes(keyword));
+
+        if (matchCategory && matchSearch) {
+          count++;
+          const cardEl = document.createElement("div");
+          cardEl.className = "card";
+          cardEl.innerHTML = `
+            <div class="card-header">
+              <span class="card-title">${item.title}</span>
+              <span class="tag ${item.isCustom ? 'tag-custom' : ''}">${item.tag}</span>
+            </div>
+            <div class="box-do">
+              <div class="box-title">🟢 [DO] 꼭 해야 할 행동</div>
+              <ul>${item.doList.map(t => `<li>${t}</li>`).join('')}</ul>
+            </div>
+            <div class="box-dont">
+              <div class="box-title">🔴 [DON'T] 절대 하지 말아야 할 행동</div>
+              <ul>${item.dontList.map(t => `<li>${t}</li>`).join('')}</ul>
+            </div>
+            <details>
+              <summary>💡 왜 이렇게 해야 할까요? (이유 확인)</summary>
+              <div class="why-desc">${item.why}</div>
+            </details>
+          `;
+          cardList.appendChild(cardEl);
+        }
+      });
+
+      noResult.style.display = count === 0 ? "block" : "none";
+    }
+
+    // 탭 클릭 이벤트
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentCategory = btn.getAttribute("data-category");
+        renderCards();
+      });
+    });
+
+    // 검색 입력 이벤트
+    searchInput.addEventListener("input", renderCards);
+
+    // 초기 실행
+    renderCards();
+  </script>
+</body>
+</html>
