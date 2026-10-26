@@ -2,61 +2,87 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>매너노트 - 상황별 예절 사전</title>
-  <!-- 분리된 디자인 스타일시트 불러오기 -->
+  <title>매너노트</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-container">
-    <div class="header">
-      <button class="back-btn" id="backBtn" onclick="goToHome()">← 뒤로가기</button>
-      <h1 class="header-title" id="headerTitle">매너노트</h1>
-      <div style="width: 24px;"></div>
-    </div>
+  <div class="app-wrapper">
+    <!-- 상단 네비게이션 -->
+    <header class="top-nav">
+      <button class="back-btn" id="backBtn" onclick="goHome()">← 뒤로</button>
+      <h1 class="brand-title" id="pageTitle">매너노트</h1>
+      <div style="width: 32px;"></div>
+    </header>
 
-    <div class="content">
-      <div class="search-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="상황, 복장, 인사말 검색 (예: 장례식, 절, 조의금)">
+    <!-- [1단계] 홈 화면: 초간결 미니멀 모드 -->
+    <main id="homeView">
+      <div class="home-banner">
+        <span class="banner-badge">3초 예절 치트키</span>
+        <h2 class="banner-headline">헷갈리는 순간,<br>바로 확인하세요</h2>
       </div>
 
-      <!-- [화면 1] 홈 카테고리 -->
-      <div id="homeView">
-        <div class="home-section-title">상황별 카테고리</div>
-        <div class="category-grid">
-          <div class="category-card" onclick="openCategory('경조사')">
-            <span class="category-icon">🕊️</span>
-            <div class="category-name">경조사</div>
-            <div class="category-desc">장례식, 결혼식, 조의금 작성</div>
+      <div class="category-container">
+        <div class="cat-tile" onclick="openCategory('경조사')">
+          <span class="cat-icon">🕊️</span>
+          <div>
+            <div class="cat-name">경조사</div>
+            <div class="cat-sub">장례·결혼·돌잔치</div>
           </div>
-          <div class="category-card" onclick="openCategory('비즈니스')">
-            <span class="category-icon">💼</span>
-            <div class="category-name">비즈니스</div>
-            <div class="category-desc">첫 미팅, 명함, 메일 소통</div>
+        </div>
+        <div class="cat-tile" onclick="openCategory('비즈니스')">
+          <span class="cat-icon">💼</span>
+          <div>
+            <div class="cat-name">비즈니스</div>
+            <div class="cat-sub">미팅·명함·메일</div>
           </div>
-          <div class="category-card" onclick="openCategory('식사·회식')">
-            <span class="category-icon">🍽️</span>
-            <div class="category-name">식사·회식</div>
-            <div class="category-desc">자리 배치, 건배, 수저 세팅</div>
+        </div>
+        <div class="cat-tile" onclick="openCategory('식사·회식')">
+          <span class="cat-icon">🍽️</span>
+          <div>
+            <div class="cat-name">식사·회식</div>
+            <div class="cat-sub">상석·건배·상견례</div>
           </div>
-          <div class="category-card" onclick="openCategory('일상·이웃')">
-            <span class="category-icon">🏘️</span>
-            <div class="category-name">일상·이웃</div>
-            <div class="category-desc">엘리베이터, 층간소음, 인사</div>
+        </div>
+        <div class="cat-tile" onclick="openCategory('일상·이웃')">
+          <span class="cat-icon">🏘️</span>
+          <div>
+            <div class="cat-name">일상·이웃</div>
+            <div class="cat-sub">엘리베이터·소음</div>
           </div>
         </div>
       </div>
+    </main>
 
-      <!-- [화면 2] 상세 드릴다운 -->
-      <div id="detailView" class="detail-view">
-        <div class="sub-situation-chips" id="subSituationChips"></div>
-        <div id="stepCardsContainer"></div>
+    <!-- [2단계] 세부 카테고리 & 키워드 화면 -->
+    <section id="detailView" class="detail-view">
+      <!-- 상황 칩 가로 스크롤 -->
+      <div class="situation-scroll" id="situationChips"></div>
+
+      <!-- 세부 키워드 그리드 -->
+      <div class="keyword-section-title">핵심 예절 선택</div>
+      <div class="keyword-grid" id="keywordGrid"></div>
+    </section>
+
+    <!-- [3단계] 하단 팝업 (바텀시트) -->
+    <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+    <div class="bottom-sheet" id="bottomSheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-badge" id="sheetBadge"></div>
+      <h3 class="sheet-title" id="sheetTitle"></h3>
+      
+      <div class="sheet-core-box" id="sheetCore"></div>
+      
+      <div class="sheet-why-box">
+        <div class="sheet-why-title">💡 왜 이렇게 해야 할까요?</div>
+        <div id="sheetWhy"></div>
       </div>
+
+      <button class="sheet-close-btn" onclick="closeSheet()">확인했습니다</button>
     </div>
   </div>
 
-  <!-- 데이터 파일 먼저 읽고, 그 다음 동작 스크립트 실행 -->
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
