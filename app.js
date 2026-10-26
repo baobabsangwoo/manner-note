@@ -1,81 +1,84 @@
-// [동작 제어]: 화면 전환, 탭 클릭, 실시간 검색을 담당합니다.
-let activeCategory = null;
-let activeSubIndex = 0;
+// [매너노트 화면 전환 및 바텀시트 제어 로직]
+let currentCategory = null;
+let currentSituation = null;
 
+// 홈 -> 특정 카테고리 진입
 function openCategory(catName) {
-  activeCategory = catName;
-  activeSubIndex = 0;
+  currentCategory = catName;
   document.getElementById("homeView").style.display = "none";
   document.getElementById("detailView").style.display = "block";
-  document.getElementById("backBtn").style.display = "inline-block";
-  document.getElementById("headerTitle").innerText = catName;
-  renderDetail();
+  document.getElementById("backBtn").style.display = "block";
+  document.getElementById("pageTitle").innerText = catName;
+
+  // 카테고리 내 첫 번째 상황을 기본 활성화
+  const situations = Object.keys(mannerDB[catName] || {});
+  currentSituation = situations[0] || null;
+
+  renderCategoryView();
 }
 
-function goToHome() {
-  activeCategory = null;
+// 홈으로 돌아가기
+function goHome() {
+  currentCategory = null;
+  currentSituation = null;
   document.getElementById("homeView").style.display = "block";
   document.getElementById("detailView").style.display = "none";
   document.getElementById("backBtn").style.display = "none";
-  document.getElementById("headerTitle").innerText = "매너노트";
-  document.getElementById("searchInput").value = "";
+  document.getElementById("pageTitle").innerText = "매너노트";
 }
 
-function renderDetail() {
-  const dataList = mannerDB[activeCategory] || [];
-  const chipsContainer = document.getElementById("subSituationChips");
-  const cardsContainer = document.getElementById("stepCardsContainer");
+// 2단계 화면 렌더링 (상황 칩 + 키워드 버튼)
+function renderCategoryView() {
+  const catData = mannerDB[currentCategory] || {};
+  const situations = Object.keys(catData);
+  const chipsContainer = document.getElementById("situationChips");
+  const keywordGrid = document.getElementById("keywordGrid");
 
-  chipsContainer.innerHTML = dataList.map((item, idx) => `
-    <button class="chip ${idx === activeSubIndex ? 'active' : ''}" onclick="selectSub(${idx})">
-      ${item.subTitle}
+  // 상황 칩 렌더링
+  chipsContainer.innerHTML = situations.map(sit => `
+    <button class="sit-chip ${sit === currentSituation ? 'active' : ''}" onclick="selectSituation('${sit}')">
+      ${sit}
     </button>
   `).join('');
 
-  const currentSituation = dataList[activeSubIndex];
-  if (!currentSituation) {
-    cardsContainer.innerHTML = "<div style='color:#94a3b8; text-align:center; padding:20px;'>준비 중인 카테고리입니다.</div>";
-    return;
-  }
+  // 선택된 상황의 키워드 목록 렌더링
+  const keywords = catData[currentSituation] || {};
+  const keywordKeys = Object.keys(keywords);
 
-  cardsContainer.innerHTML = currentSituation.steps.map(step => `
-    <div class="step-card">
-      <div class="step-header">
-        <span class="step-badge badge-${step.type}">${step.badge}</span>
-        <span class="step-title">${step.title}</span>
+  keywordGrid.innerHTML = keywordKeys.map(kKey => {
+    const item = keywords[kKey];
+    return `
+      <div class="key-btn" onclick="openSheet('${kKey}')">
+        <span class="key-badge">${item.badge}</span>
+        <h4 class="key-title">${kKey}</h4>
+        <div class="key-hint">터치하여 확인 →</div>
       </div>
-      <div class="step-core">${step.core}</div>
-      <details>
-        <summary>💡 왜 이렇게 해야 할까요?</summary>
-        <div class="why-text">${step.why}</div>
-      </details>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
-function selectSub(idx) {
-  activeSubIndex = idx;
-  renderDetail();
+// 다른 세부 상황 칩 선택 (예: 장례식 -> 결혼식)
+function selectSituation(sitName) {
+  currentSituation = sitName;
+  renderCategoryView();
 }
 
-document.getElementById("searchInput").addEventListener("input", function() {
-  const kw = this.value.trim().toLowerCase();
-  if (!kw) return;
+// 3단계: 바텀시트 팝업 열기
+function openSheet(keywordKey) {
+  const data = mannerDB[currentCategory][currentSituation][keywordKey];
+  if (!data) return;
 
-  for (const [cat, situations] of Object.entries(mannerDB)) {
-    for (let i = 0; i < situations.length; i++) {
-      const match = situations[i].subTitle.toLowerCase().includes(kw) ||
-        situations[i].steps.some(s => s.title.toLowerCase().includes(kw) || s.core.toLowerCase().includes(kw));
-      if (match) {
-        activeCategory = cat;
-        activeSubIndex = i;
-        document.getElementById("homeView").style.display = "none";
-        document.getElementById("detailView").style.display = "block";
-        document.getElementById("backBtn").style.display = "inline-block";
-        document.getElementById("headerTitle").innerText = cat;
-        renderDetail();
-        return;
-      }
-    }
-  }
-});
+  document.getElementById("sheetBadge").innerText = `${currentSituation} · ${data.badge}`;
+  document.getElementById("sheetTitle").innerText = data.title;
+  document.getElementById("sheetCore").innerText = data.core;
+  document.getElementById("sheetWhy").innerText = data.why;
+
+  document.getElementById("sheetOverlay").classList.add("open");
+  document.getElementById("bottomSheet").classList.add("open");
+}
+
+// 바텀시트 팝업 닫기
+function closeSheet() {
+  document.getElementById("sheetOverlay").classList.remove("open");
+  document.getElementById("bottomSheet").classList.remove("open");
+}
