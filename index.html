@@ -8,78 +8,126 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app-wrapper">
-    <!-- 상단 네비게이션 -->
-    <header class="top-nav">
-      <button class="back-btn" id="backBtn" onclick="goHome()">← 뒤로</button>
-      <h1 class="brand-title" id="pageTitle">매너노트</h1>
-      <div style="width: 32px;"></div>
-    </header>
-
-    <!-- [1단계] 홈 화면: 초간결 미니멀 모드 -->
-    <main id="homeView">
-      <div class="home-banner">
-        <span class="banner-badge">3초 예절 치트키</span>
-        <h2 class="banner-headline">헷갈리는 순간,<br>바로 확인하세요</h2>
-      </div>
-
-      <div class="category-container">
-        <div class="cat-tile" onclick="openCategory('경조사')">
-          <span class="cat-icon">🕊️</span>
-          <div>
-            <div class="cat-name">경조사</div>
-            <div class="cat-sub">장례·결혼·돌잔치</div>
-          </div>
-        </div>
-        <div class="cat-tile" onclick="openCategory('비즈니스')">
-          <span class="cat-icon">💼</span>
-          <div>
-            <div class="cat-name">비즈니스</div>
-            <div class="cat-sub">미팅·명함·메일</div>
-          </div>
-        </div>
-        <div class="cat-tile" onclick="openCategory('식사·회식')">
-          <span class="cat-icon">🍽️</span>
-          <div>
-            <div class="cat-name">식사·회식</div>
-            <div class="cat-sub">상석·건배·상견례</div>
-          </div>
-        </div>
-        <div class="cat-tile" onclick="openCategory('일상·이웃')">
-          <span class="cat-icon">🏘️</span>
-          <div>
-            <div class="cat-name">일상·이웃</div>
-            <div class="cat-sub">엘리베이터·소음</div>
-          </div>
+  <div class="app-outer">
+    <div class="phone-shell">
+      <!-- 1. iOS StatusBar -->
+      <div class="status-bar" aria-hidden="true">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor">
+            <rect x="0" y="8" width="3" height="4" rx="1" />
+            <rect x="5" y="5.5" width="3" height="6.5" rx="1" />
+            <rect x="10" y="3" width="3" height="9" rx="1" />
+            <rect x="15" y="0" width="3" height="12" rx="1" />
+          </svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor">
+            <path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.2-1.2A10.2 10.2 0 0 0 8 .7 10.2 10.2 0 0 0 .8 3.6L2 4.8a8.5 8.5 0 0 1 6-2.4Z" />
+            <path d="M8 5.8c1.4 0 2.6.5 3.6 1.4l1.2-1.2A6.8 6.8 0 0 0 8 4.1C6.2 4.1 4.5 4.8 3.2 6l1.2 1.2c1-.9 2.2-1.4 3.6-1.4Z" />
+            <path d="M8 9.2c.5 0 .9.2 1.2.5L8 11 6.8 9.7c.3-.3.7-.5 1.2-.5Z" />
+          </svg>
+          <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+            <rect x="0.5" y="0.5" width="22" height="12" rx="3.8" stroke="currentColor" stroke-opacity="0.35" />
+            <rect x="2" y="2" width="19" height="9" rx="2.5" fill="currentColor" />
+            <path d="M24 4.5v4c.8-.3 1.4-1.1 1.4-2s-.6-1.7-1.4-2Z" fill="currentColor" fill-opacity="0.4" />
+          </svg>
         </div>
       </div>
-    </main>
 
-    <!-- [2단계] 세부 카테고리 & 키워드 화면 -->
-    <section id="detailView" class="detail-view">
-      <!-- 상황 칩 가로 스크롤 -->
-      <div class="situation-scroll" id="situationChips"></div>
+      <!-- 2. 메인 화면 영역 -->
+      <main class="main-scroll no-scrollbar">
+        <header class="app-header">
+          <h1 class="app-title">매너노트</h1>
+          <button type="button" aria-label="설정" class="icon-circle-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>
+            </svg>
+          </button>
+        </header>
 
-      <!-- 세부 키워드 그리드 -->
-      <div class="keyword-section-title">핵심 예절 선택</div>
-      <div class="keyword-grid" id="keywordGrid"></div>
-    </section>
+        <!-- 검색창 & 최근 검색어 -->
+        <section aria-label="검색" class="search-section">
+          <button type="button" class="search-trigger-btn" onclick="openSearch()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <span class="search-placeholder">상황, 복장, 인사말 검색...</span>
+          </button>
 
-    <!-- [3단계] 하단 팝업 (바텀시트) -->
-    <div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
-    <div class="bottom-sheet" id="bottomSheet">
-      <div class="sheet-handle"></div>
-      <div class="sheet-badge" id="sheetBadge"></div>
-      <h3 class="sheet-title" id="sheetTitle"></h3>
-      
-      <div class="sheet-core-box" id="sheetCore"></div>
-      
-      <div class="sheet-why-box">
-        <div class="sheet-why-title">💡 왜 이렇게 해야 할까요?</div>
-        <div id="sheetWhy"></div>
+          <div id="recentSection" class="recent-wrap">
+            <div class="recent-header">
+              <h2 class="section-sub-label">최근 검색</h2>
+              <button type="button" class="clear-btn" onclick="clearRecent()">전체 삭제</button>
+            </div>
+            <ul id="recentChipsList" class="recent-chips-list no-scrollbar"></ul>
+          </div>
+        </section>
+
+        <!-- 상황별 2열 카드 그리드 -->
+        <section aria-labelledby="category-heading" class="category-section">
+          <div class="category-section-head">
+            <h2 id="category-heading" class="category-section-title">상황별 가이드</h2>
+            <span id="categoryCount" class="category-count"></span>
+          </div>
+          <div id="categoryGrid" class="category-grid"></div>
+        </section>
+      </main>
+
+      <!-- 3. 하단 탭바 (BottomNav) -->
+      <nav aria-label="주요 메뉴" class="bottom-nav">
+        <ul id="bottomNavList" class="bottom-nav-list"></ul>
+        <div class="home-indicator-wrap" aria-hidden="true">
+          <span class="home-indicator-bar"></span>
+        </div>
+      </nav>
+
+      <!-- 4. 전체화면 검색 오버레이 (SearchOverlay) -->
+      <div id="searchOverlay" class="search-overlay" role="search" aria-hidden="true">
+        <form id="searchForm" class="search-form">
+          <label class="search-input-label">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#667085" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="상황, 복장, 인사말 검색..."
+              class="search-real-input"
+              autocomplete="off"
+            />
+            <button type="button" id="clearInputBtn" class="clear-input-btn" style="display:none;" aria-label="검색어 지우기">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="white" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
+              </svg>
+            </button>
+          </label>
+          <button type="button" class="cancel-search-btn" onclick="closeSearch()">취소</button>
+        </form>
+        <div id="searchBody" class="search-body no-scrollbar"></div>
       </div>
 
-      <button class="sheet-close-btn" onclick="closeSheet()">확인했습니다</button>
+      <!-- 5. 카테고리 상세 바텀시트 (CategorySheet) -->
+      <div id="sheetContainer" class="sheet-container" aria-hidden="true">
+        <div class="sheet-backdrop" onclick="closeSheet()"></div>
+        <div class="sheet-dialog" role="dialog" aria-modal="true">
+          <div class="sheet-grabber-wrap">
+            <span class="sheet-grabber"></span>
+          </div>
+          <header class="sheet-header">
+            <div id="sheetIconBox" class="sheet-icon-box"></div>
+            <div class="sheet-title-wrap">
+              <h2 id="sheetTitle" class="sheet-title"></h2>
+              <p id="sheetSubtitle" class="sheet-subtitle"></p>
+            </div>
+            <button type="button" class="sheet-close-x" onclick="closeSheet()" aria-label="닫기">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </header>
+          <div id="sheetTabs" role="tablist" class="sheet-tabs"></div>
+          <div id="sheetPanel" class="sheet-panel no-scrollbar"></div>
+        </div>
+      </div>
     </div>
   </div>
 
